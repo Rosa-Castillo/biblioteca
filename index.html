@@ -3,25 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca de Barrio</title>
+    <title>Sistema de Gestión - Biblioteca de Barrio</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
-        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; color: #333; }
+        header { background: #2c3e50; color: white; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 8px; margin-top: 0; }
+        input, select, button { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #3498db; color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #2980b9; }
+        ul { list-style: none; padding: 0; }
+        li { background: #f8f9fa; padding: 10px; border-bottom: 1px solid #eee; margin-bottom: 5px; border-radius: 4px; }
+        .note { background: #e8f4f8; padding: 12px; border-left: 4px solid #3498db; margin-top: 15px; font-size: 0.9em; }
     </style>
 </head>
 <body>
-    <h1>Biblioteca de Barrio 📚</h1>
-    
-    <div class="card">
-        <h2>Diario del Desarrollador (Decisión de diseño)</h2>
-        <p><strong>Decisión:</strong> Se deniega la petición del cliente de permitir que <code>Prestamos</code> acceda directamente a la lista interna de <code>Catalogo</code>.</p>
-        <p><strong>Explicación:</strong> Acceder directamente a los datos privados rompería el encapsulamiento y aumentaría el acoplamiento entre componentes.</p>
+
+    <header>
+        <h1>📚 Biblioteca de Barrio</h1>
+        <p>Sistema Interactivo de Gestión de Catálogo, Socios y Préstamos</p>
+    </header>
+
+    <div class="grid">
+        <!-- Catálogo de Libros -->
+        <div class="card">
+            <h2>📖 Catálogo de Libros</h2>
+            <input type="text" id="tituloLibro" placeholder="Título del libro">
+            <input type="text" id="autorLibro" placeholder="Autor">
+            <button onclick="agregarLibro()">Añadir Libro</button>
+            <ul id="listaLibros"></ul>
+        </div>
+
+        <!-- Registro de Socios -->
+        <div class="card">
+            <h2>👥 Registro de Socios</h2>
+            <input type="text" id="nombreSocio" placeholder="Nombre completo">
+            <input type="number" id="numSocio" placeholder="Número de socio">
+            <button onclick="registrarSocio()">Registrar Socio</button>
+            <ul id="listaSocios"></ul>
+        </div>
+
+        <!-- Gestión de Préstamos -->
+        <div class="card">
+            <h2>🔄 Préstamos</h2>
+            <select id="selectSocio"><option value="">Selecciona Socio</option></select>
+            <select id="selectLibro"><option value="">Selecciona Libro</option></select>
+            <button onclick="realizarPrestamo()">Registrar Préstamo</button>
+            <ul id="listaPrestamos"></ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h2>Aplicación en Python</h2>
-        <p>Este proyecto se divide en componentes modulares ejecutados en consola: <code>catalogo.py</code>, <code>socios.py</code>, <code>prestamos.py</code> y <code>main.py</code>.</p>
+    <!-- Diario del Desarrollador -->
+    <div class="card" style="margin-top: 20px;">
+        <h2>📝 Diario del Desarrollador (Decisión de Diseño)</h2>
+        <p><strong>Decisión:</strong> Se deniega la petición del cliente de permitir que <code>Prestamos</code> acceda directamente a la lista interna de <code>Catalogo</code>.</p>
+        <p><strong>Explicación:</strong> Acceder directamente a los datos privados rompería el encapsulamiento y aumentaría el acoplamiento entre componentes.</p>
+        <div class="note">
+            Este frontend interactivo refleja la arquitectura modular implementada en la aplicación en Python (<code>catalogo.py</code>, <code>socios.py</code>, <code>prestamos.py</code>, <code>main.py</code>).
+        </div>
     </div>
+
+    <script>
+        const libros = [];
+        const socios = [];
+        const prestamos = [];
+
+        function agregarLibro() {
+            const titulo = document.getElementById('tituloLibro').value.trim();
+            const autor = document.getElementById('autorLibro').value.trim();
+            if (!titulo || !autor) return alert('Completa todos los campos');
+
+            libros.push({ titulo, autor });
+            document.getElementById('tituloLibro').value = '';
+            document.getElementById('autorLibro').value = '';
+            actualizarInterfaz();
+        }
+
+        function registrarSocio() {
+            const nombre = document.getElementById('nombreSocio').value.trim();
+            const num = document.getElementById('numSocio').value.trim();
+            if (!nombre || !num) return alert('Completa todos los campos');
+
+            socios.push({ nombre, num });
+            document.getElementById('nombreSocio').value = '';
+            document.getElementById('numSocio').value = '';
+            actualizarInterfaz();
+        }
+
+        function realizarPrestamo() {
+            const socioIdx = document.getElementById('selectSocio').value;
+            const libroIdx = document.getElementById('selectLibro').value;
+            if (socioIdx === "" || libroIdx === "") return alert('Selecciona socio y libro');
+
+            const socio = socios[socioIdx];
+            const libro = libros[libroIdx];
+            const fecha = new Date().toLocaleDateString();
+
+            prestamos.push({ socio: socio.nombre, libro: libro.titulo, fecha });
+            actualizarInterfaz();
+        }
+
+        function actualizarInterfaz() {
+            // Lista e inputs de Libros
+            const ulLibros = document.getElementById('listaLibros');
+            const selectLibro = document.getElementById('selectLibro');
+            ulLibros.innerHTML = '';
+            selectLibro.innerHTML = '<option value="">Selecciona Libro</option>';
+            libros.forEach((l, i) => {
+                ulLibros.innerHTML += `<li><strong>${l.titulo}</strong> - ${l.autor}</li>`;
+                selectLibro.innerHTML += `<option value="${i}">${l.titulo}</option>`;
+            });
+
+            // Lista e inputs de Socios
+            const ulSocios = document.getElementById('listaSocios');
+            const selectSocio = document.getElementById('selectSocio');
+            ulSocios.innerHTML = '';
+            selectSocio.innerHTML = '<option value="">Selecciona Socio</option>';
+            socios.forEach((s, i) => {
+                ulSocios.innerHTML += `<li>${s.nombre} (#${s.num})</li>`;
+                selectSocio.innerHTML += `<option value="${i}">${s.nombre}</option>`;
+            });
+
+            // Lista de Préstamos
+            const ulPrestamos = document.getElementById('listaPrestamos');
+            ulPrestamos.innerHTML = '';
+            prestamos.forEach(p => {
+                ulPrestamos.innerHTML += `<li><strong>${p.socio}</strong> tomó "<em>${p.libro}</em>" el ${p.fecha}</li>`;
+            });
+        }
+    </script>
 </body>
 </html>
