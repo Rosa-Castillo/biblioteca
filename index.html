@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Barrio</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Biblioteca de Barrio 📚</h1>
+    
+    <div class="card">
+        <h2>Diario del Desarrollador (Decisión de diseño)</h2>
+        <p><strong>Decisión:</strong> Se deniega la petición del cliente de permitir que <code>Prestamos</code> acceda directamente a la lista interna de <code>Catalogo</code>.</p>
+        <p><strong>Explicación:</strong> Acceder directamente a los datos privados rompería el encapsulamiento y aumentaría el acoplamiento entre componentes.</p>
+    </div>
+
+    <div class="card">
+        <h2>Aplicación en Python</h2>
+        <p>Este proyecto se divide en componentes modulares ejecutados en consola: <code>catalogo.py</code>, <code>socios.py</code>, <code>prestamos.py</code> y <code>main.py</code>.</p>
+    </div>
+</body>
+</html>
